@@ -68,7 +68,7 @@ public class UserController {
         }
 
         try {
-            userService.addUserAndCreateSchool(user);
+            userService.addNewUser(user);
             sessionAuth(session, user.getEmail());
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(UserStatus.SUCCESSFULLY_CREATED);
@@ -130,21 +130,21 @@ public class UserController {
     }
 
 
-    @PostMapping(path = "/add")
-    public ResponseEntity add(HttpSession httpSession,
-                                 @RequestBody UserDTO userDTO) {
-
-        Object userSession = httpSession.getAttribute("user");
-        if (userSession == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(UserStatus.ACCESS_ERROR);
-        }
-
-        userService.addNewUser(userSession.toString(),
-                userDTO);
-        return ResponseEntity.ok(UserStatus.SUCCESSFULLY_CHANGED);
-
-    }
+//    @PostMapping(path = "/add")
+//    public ResponseEntity add(HttpSession httpSession,
+//                                 @RequestBody UserDTO userDTO) {
+//
+//        Object userSession = httpSession.getAttribute("user");
+//        if (userSession == null) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+//                    .body(UserStatus.ACCESS_ERROR);
+//        }
+//
+//        userService.addNewUser(userSession.toString(),
+//                userDTO);
+//        return ResponseEntity.ok(UserStatus.SUCCESSFULLY_CHANGED);
+//
+//    }
 
     @PostMapping(path = "/logout")
     public ResponseEntity logout(HttpSession httpSession) {

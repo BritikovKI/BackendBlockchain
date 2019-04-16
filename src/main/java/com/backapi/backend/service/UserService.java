@@ -6,11 +6,9 @@ public interface UserService {
 
     UserDTO getUserByEmail(String email);
 
-    void addUserAndCreateSchool(UserDTO userDTO);
-
     boolean checkUserPassword(String rawPassword, String passwordFromDb);
 
     void changeUserPassword(String email, String password);
 
-    void addNewUser(String toString, UserDTO userDTO);
+    void addNewUser(UserDTO userDTO);
 }

@@ -38,8 +38,8 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void addNewUser(String toString, UserDTO userDTO) {
-        final String sql = "INSERT INTO user(email, password, school_id) VALUES (?, ?, ?)";
+    public void addNewUser( UserDTO userDTO) {
+        final String sql = "INSERT INTO user(email, password) VALUES (?, ?)";
         jdbc.update(sql, userDTO.getEmail(), userDTO.getPassword()) ;
 
     }
