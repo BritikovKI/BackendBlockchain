@@ -1,6 +1,7 @@
 package com.backapi.backend.service.Impl;
 
 import com.backapi.backend.dao.UserDAO;
+import com.backapi.backend.model.dto.ChangePasswordDTO;
 import com.backapi.backend.model.dto.UserDTO;
 import com.backapi.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeUserPassword(String email, String password) {
-        userDAO.changePassword(email, passwordEncoder.encode(password));
+    public void changeUserPassword(String email, ChangePasswordDTO password) {
+        userDAO.changePassword(email, password);
     }
 
     @Override

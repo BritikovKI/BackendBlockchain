@@ -122,7 +122,7 @@ public class UserController {
 
         if (passwordIsValid) {
             userService.changeUserPassword(userSession.toString(),
-                    changePassword.getNewPassword());
+                    changePassword);
             return ResponseEntity.ok(UserStatus.SUCCESSFULLY_CHANGED);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -145,6 +145,7 @@ public class UserController {
 //        return ResponseEntity.ok(UserStatus.SUCCESSFULLY_CHANGED);
 //
 //    }
+
 
     @PostMapping(path = "/logout")
     public ResponseEntity logout(HttpSession httpSession) {
