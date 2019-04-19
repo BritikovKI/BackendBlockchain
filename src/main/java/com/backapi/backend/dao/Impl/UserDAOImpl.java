@@ -35,28 +35,14 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
-    @Override
-    public Integer addUser(UserDTO userDTO) {
-        final String sql = "INSERT INTO users(email, password) VALUES (?, ?) RETURNING id";
-        return jdbc.queryForObject(sql, Integer.class, userDTO.getEmail(), userDTO.getPassword());
-    }
 
     @Override
     public void addNewUser( UserDTO userDTO) {
         final String sql = "INSERT INTO users(email, password) VALUES (?, ?)";
-        jdbc.update(sql, userDTO.getEmail(), userDTO.getPassword()) ;
+        jdbc.update(sql, userDTO.getEmail(), passwordEncoder.encode(userDTO.getPassword())) ;
 
     }
 
-    @Override
-    public Integer getUserIdByEmail(String email) {
-        try {
-            return jdbc.queryForObject("SELECT id FROM users WHERE lower(email) = lower(?)", Integer.class, email);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
-
-    }
 
     public void changePassword(String email, ChangePasswordDTO password) {
         final String sql = "UPDATE users SET password = ?, public_key=? WHERE lower(user.email) = lower(?);";
