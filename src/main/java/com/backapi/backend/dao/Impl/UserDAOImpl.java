@@ -9,6 +9,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class UserDAOImpl implements UserDAO {
 
@@ -44,9 +46,15 @@ public class UserDAOImpl implements UserDAO {
     }
 
 
-    public void changePassword(String email, ChangePasswordDTO password) {
-        final String sql = "UPDATE users SET password = ?, public_key=? WHERE lower(user.email) = lower(?);";
-        jdbc.update(sql, passwordEncoder.encode(password.getNewPassword()), password.getKey(), email);
+    public void changeUserKey(String email,UserDTO user) {
+        final String sql = "UPDATE users SET public_key=? WHERE lower(users.email) = lower(?);";
+        jdbc.update(sql, user.getPublicKey(), email);
+    }
+
+    @Override
+    public List<UserDTO> get() {
+        final String sql = "SELECT * FROM users;";
+        return jdbc.query(sql, userMapper);
     }
 
 //    public static class UserMapper implements RowMapper<UserDTO> {

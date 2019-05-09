@@ -1,0 +1,1 @@
+ALTER TABLE user_vote ADD COLUMN voted BOOLEAN DEFAULT false;

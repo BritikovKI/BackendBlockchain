@@ -1,13 +1,13 @@
 package com.backapi.backend.service.Impl;
 
 import com.backapi.backend.dao.UserDAO;
-import com.backapi.backend.model.dto.ChangePasswordDTO;
 import com.backapi.backend.model.dto.UserDTO;
 import com.backapi.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import java.io.IOException;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -34,12 +34,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeUserPassword(String email, ChangePasswordDTO password) {
-        userDAO.changePassword(email, password);
+    public void changeUserKey(String email, UserDTO user) {
+        userDAO.changeUserKey(email, user);
+        ProcessBuilder pb = new ProcessBuilder("src/main/resources/scripts/transactMoney.sh", user.getPublicKey());
+        try {
+            Process p = pb.start();
+        } catch (IOException ex){
+            return;
+        }
+
+
     }
 
     @Override
     public void addNewUser( UserDTO userDTO) {
         userDAO.addNewUser( userDTO);
+    }
+
+    @Override
+    public List<UserDTO> getUsers() {
+        return userDAO.get();
     }
 }

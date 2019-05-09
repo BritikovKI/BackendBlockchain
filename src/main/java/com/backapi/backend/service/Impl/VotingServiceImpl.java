@@ -1,6 +1,8 @@
 package com.backapi.backend.service.Impl;
 
 import com.backapi.backend.dao.VotingDAO;
+import com.backapi.backend.model.dto.UserDTO;
+import com.backapi.backend.model.dto.UserVoteDTO;
 import com.backapi.backend.model.dto.VotingDTO;
 import com.backapi.backend.service.VotingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +46,12 @@ public class VotingServiceImpl implements VotingService {
     }
 
     @Override
-    public List<VotingDTO> getAll() {
-        return votingDAO.getAll();
+    public List<VotingDTO> getAll(Integer userId) {
+        return votingDAO.getAll(userId);
+    }
+
+    @Override
+    public void addUser(UserVoteDTO userDTO, String user) {
+        votingDAO.addUser(userDTO, user);
     }
 }

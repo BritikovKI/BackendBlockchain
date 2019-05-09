@@ -106,8 +106,32 @@ public class UserController {
     }
 
     @PostMapping(path = "/change")
-    public ResponseEntity change(HttpSession httpSession,
-                                 @RequestBody ChangePasswordDTO changePassword) {
+    public ResponseEntity change(HttpSession httpSession, @RequestBody UserDTO userDTO) {
+
+        if (httpSession.getAttribute("user") == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(UserStatus.ALREADY_AUTHENTICATED);
+        }
+        if (httpSession.getAttribute("user").toString() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(UserStatus.NOT_FOUND);
+        }
+
+        try {
+            userService.changeUserKey(
+                    httpSession.getAttribute("user").toString(),
+                    userDTO);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(UserStatus.WRONG_CREDENTIALS);
+        }
+
+        return ResponseEntity.ok(UserStatus.SUCCESSFULLY_AUTHED);
+    }
+
+    @GetMapping(path = "/get")
+    public ResponseEntity get(HttpSession httpSession ) {
 
         Object userSession = httpSession.getAttribute("user");
         if (userSession == null) {
@@ -115,36 +139,9 @@ public class UserController {
                     .body(UserStatus.ACCESS_ERROR);
         }
 
-        UserDTO userFromDb = userService.getUserByEmail(userSession.toString());
-        boolean passwordIsValid = userService.checkUserPassword(
-                changePassword.getOldPassword(),
-                userFromDb.getPassword());
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUsers());
 
-        if (passwordIsValid) {
-            userService.changeUserPassword(userSession.toString(),
-                    changePassword);
-            return ResponseEntity.ok(UserStatus.SUCCESSFULLY_CHANGED);
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(UserStatus.WRONG_CREDENTIALS);
     }
-
-
-//    @PostMapping(path = "/add")
-//    public ResponseEntity add(HttpSession httpSession,
-//                                 @RequestBody UserDTO userDTO) {
-//
-//        Object userSession = httpSession.getAttribute("user");
-//        if (userSession == null) {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-//                    .body(UserStatus.ACCESS_ERROR);
-//        }
-//
-//        userService.addNewUser(userSession.toString(),
-//                userDTO);
-//        return ResponseEntity.ok(UserStatus.SUCCESSFULLY_CHANGED);
-//
-//    }
 
 
     @PostMapping(path = "/logout")

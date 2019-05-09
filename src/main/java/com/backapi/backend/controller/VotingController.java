@@ -3,6 +3,7 @@ package com.backapi.backend.controller;
 
 import com.backapi.backend.model.UserStatus;
 import com.backapi.backend.model.dto.UserDTO;
+import com.backapi.backend.model.dto.UserVoteDTO;
 import com.backapi.backend.model.dto.VotingDTO;
 import com.backapi.backend.service.UserService;
 import com.backapi.backend.service.VotingService;
@@ -47,6 +48,31 @@ public class VotingController {
         } catch (DuplicateKeyException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(UserStatus.NOT_UNIQUE_FIELDS_IN_REQUEST);
+        }
+    }
+
+    @PostMapping(path = "/add")
+    public ResponseEntity change(HttpSession session, @RequestBody UserVoteDTO userDTO) {
+
+
+        if (session.getAttribute("user") == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(UserStatus.ACCESS_ERROR);
+        }
+        UserDTO user = userService.getUserByEmail(session.getAttribute("user").toString());
+        if(user.getId() == votingService.get(userDTO.getVote_id()).getUser_id()) {
+            try {
+
+                votingService.addUser(userDTO, session.getAttribute("user").toString());
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(UserStatus.SUCCESSFULLY_CHANGED);
+            } catch (DuplicateKeyException e) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(UserStatus.NOT_UNIQUE_FIELDS_IN_REQUEST);
+            }
+        }else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(UserStatus.ACCESS_ERROR);
         }
     }
 
@@ -97,7 +123,7 @@ public class VotingController {
 
             try {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                        .body(votingService.getAll());
+                        .body(votingService.getAll(userService.getUserByEmail(session.getAttribute("user").toString()).getId()));
             } catch (DuplicateKeyException e) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(UserStatus.NOT_FOUND);
@@ -105,8 +131,8 @@ public class VotingController {
     }
 
 
-    @GetMapping(path = "/get/user/{id}")
-    public ResponseEntity getAll(HttpSession session, @PathVariable Integer userId) {
+    @GetMapping(path = "/get/user")
+    public ResponseEntity getUserPolls(HttpSession session) {
         if (session.getAttribute("user") == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(UserStatus.ACCESS_ERROR);
@@ -114,7 +140,7 @@ public class VotingController {
 
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(votingService.getVotesByUser(userId));
+                    .body(votingService.getVotesByUser(userService.getUserByEmail(session.getAttribute("user").toString()).getId()));
         } catch (DuplicateKeyException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(UserStatus.NOT_FOUND);

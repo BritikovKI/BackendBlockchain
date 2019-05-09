@@ -2,10 +2,13 @@ package com.backapi.backend.dao.Impl;
 
 import com.backapi.backend.dao.VotingDAO;
 import com.backapi.backend.mapper.VotingMapper;
+import com.backapi.backend.model.dto.UserDTO;
+import com.backapi.backend.model.dto.UserVoteDTO;
 import com.backapi.backend.model.dto.VotingDTO;
 import org.springframework.jdbc.core.JdbcTemplate;import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,8 +26,9 @@ public class VotingDAOImpl implements VotingDAO {
     }
 
     @Override
+    @Transactional
     public void create(VotingDTO votingDTO) {
-            final String sql = "INSERT INTO voting(name, description, creator_id) VALUES (?,?,?);";
+            String sql = "INSERT INTO voting(name, description, creator_id) VALUES (?,?,?);";
             jdbc.update(sql,votingDTO.getName(),votingDTO.getDescription(),votingDTO.getUser_id());
     }
 
@@ -51,13 +55,20 @@ public class VotingDAOImpl implements VotingDAO {
     public List<VotingDTO> getVotesByUser(Integer userId) {
 
         final String sql = "SELECT * FROM voting WHERE creator_id=?;";
-        return jdbc.query(sql,votingMapper,userId);
+        return jdbc.query(sql,votingMapper,userId,userId);
     }
 
     @Override
-    public List<VotingDTO> getAll() {
-        final String sql = "SELECT * FROM voting;";
+    public List<VotingDTO> getAll(Integer userId) {
+        final String sql = "SELECT * FROM voting JOIN user_vote" +
+                " ON user_vote.vote_id = voting.id AND creator_id=? OR user_id=?;";;
         return jdbc.query(sql,votingMapper);
+    }
+
+    @Override
+    public void addUser(UserVoteDTO userDTO, String user) {
+        final String sql = "INSERT INTO user_vote VALUES (user_id, vote_id)";
+        jdbc.update(sql, userDTO.getUser_id(), userDTO.getVote_id());
     }
 
 //    public static class UserMapper implements RowMapper<UserDTO> {
