@@ -49,6 +49,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addNewUser( UserDTO userDTO) {
         userDAO.addNewUser( userDTO);
+        if(userDTO.getPublicKey()!=null) {
+            ProcessBuilder pb = new ProcessBuilder("src/main/resources/scripts/transactMoney.sh", userDTO.getPublicKey());
+            try {
+                Process p = pb.start();
+            } catch (IOException ex){
+                return;
+            }
+        }
     }
 
     @Override

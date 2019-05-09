@@ -1,12 +1,11 @@
 package com.backapi.backend.dao.Impl;
 
 import com.backapi.backend.dao.VotingDAO;
+import com.backapi.backend.mapper.VariantMapper;
 import com.backapi.backend.mapper.VotingMapper;
-import com.backapi.backend.model.dto.UserDTO;
 import com.backapi.backend.model.dto.UserVoteDTO;
 import com.backapi.backend.model.dto.VotingDTO;
 import org.springframework.jdbc.core.JdbcTemplate;import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +16,15 @@ public class VotingDAOImpl implements VotingDAO {
 
     private final JdbcTemplate jdbc;
     private final VotingMapper votingMapper;
+    private final VariantMapper variantMapper;
 
     @Autowired
     public VotingDAOImpl(JdbcTemplate jdbc,
-                       VotingMapper votingMapper) {
+                       VotingMapper votingMapper,
+                         VariantMapper variantMapper) {
         this.jdbc = jdbc;
         this.votingMapper = votingMapper;
+        this.variantMapper = variantMapper;
     }
 
     @Override
@@ -55,14 +57,22 @@ public class VotingDAOImpl implements VotingDAO {
     public List<VotingDTO> getVotesByUser(Integer userId) {
 
         final String sql = "SELECT * FROM voting WHERE creator_id=?;";
-        return jdbc.query(sql,votingMapper,userId,userId);
+        List<VotingDTO> res = jdbc.query(sql,votingMapper,userId,userId);
+        for (VotingDTO re : res) {
+            re.setVariants(jdbc.query("SELECT * FROM variant WHERE voting_id=?;", variantMapper, re.getId()));
+        }
+        return res;
     }
 
     @Override
     public List<VotingDTO> getAll(Integer userId) {
         final String sql = "SELECT * FROM voting JOIN user_vote" +
                 " ON user_vote.vote_id = voting.id AND creator_id=? OR user_id=?;";;
-        return jdbc.query(sql,votingMapper);
+        List<VotingDTO> res = jdbc.query(sql,votingMapper);
+        for (VotingDTO re : res) {
+            re.setVariants(jdbc.query("SELECT * FROM variant WHERE voting_id=?;", variantMapper, re.getId()));
+        }
+        return res;
     }
 
     @Override
