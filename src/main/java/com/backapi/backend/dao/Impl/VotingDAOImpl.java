@@ -78,7 +78,7 @@ public class VotingDAOImpl implements VotingDAO {
 
     @Override
     public void addUser(UserVoteDTO userDTO, String user) {
-        final String sql = "INSERT INTO user_vote VALUES (user_id, vote_id)";
+        final String sql = "INSERT INTO user_vote(user_id, vote_id) VALUES (?,?);";
         jdbc.update(sql, userDTO.getUser_id(), userDTO.getVote_id());
     }
 

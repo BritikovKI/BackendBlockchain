@@ -70,7 +70,6 @@ public class VotingController {
         UserDTO user = userService.getUserByEmail(session.getAttribute("user").toString());
         if(user.getId() == votingService.get(userDTO.getVote_id()).getUser_id()) {
             try {
-
                 votingService.addUser(userDTO, session.getAttribute("user").toString());
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(UserStatus.SUCCESSFULLY_CHANGED);
