@@ -30,8 +30,9 @@ public class VotingDAOImpl implements VotingDAO {
     @Override
     @Transactional
     public void create(VotingDTO votingDTO) {
-            String sql = "INSERT INTO voting(name, description, creator_id) VALUES (?,?,?);";
-            jdbc.update(sql,votingDTO.getName(),votingDTO.getDescription(),votingDTO.getUser_id());
+            String sql = "INSERT INTO voting(name, description, creator_id, block_key) VALUES (?,?,?,?) RETURNING id;";
+            Integer id = jdbc.queryForObject(sql,Integer.class,votingDTO.getName(),votingDTO.getDescription(),votingDTO.getUser_id(), votingDTO.getBlockKey());
+            votingDTO.setId(id);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class VotingDAOImpl implements VotingDAO {
     public List<VotingDTO> getVotesByUser(Integer userId) {
 
         final String sql = "SELECT * FROM voting WHERE creator_id=?;";
-        List<VotingDTO> res = jdbc.query(sql,votingMapper,userId,userId);
+        List<VotingDTO> res = jdbc.query(sql,votingMapper,userId);
         for (VotingDTO re : res) {
             re.setVariants(jdbc.query("SELECT * FROM variant WHERE voting_id=?;", variantMapper, re.getId()));
         }
@@ -67,8 +68,8 @@ public class VotingDAOImpl implements VotingDAO {
     @Override
     public List<VotingDTO> getAll(Integer userId) {
         final String sql = "SELECT * FROM voting JOIN user_vote" +
-                " ON user_vote.vote_id = voting.id AND creator_id=? OR user_id=?;";;
-        List<VotingDTO> res = jdbc.query(sql,votingMapper);
+                " ON user_vote.vote_id = voting.id AND user_id=?;";
+        List<VotingDTO> res = jdbc.query(sql,votingMapper, userId);
         for (VotingDTO re : res) {
             re.setVariants(jdbc.query("SELECT * FROM variant WHERE voting_id=?;", variantMapper, re.getId()));
         }

@@ -6,6 +6,7 @@ import com.backapi.backend.model.dto.UserDTO;
 import com.backapi.backend.model.dto.UserVoteDTO;
 import com.backapi.backend.model.dto.VotingDTO;
 import com.backapi.backend.service.UserService;
+import com.backapi.backend.service.VariantService;
 import com.backapi.backend.service.VotingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -24,11 +25,13 @@ public class VotingController {
 
     private VotingService votingService;
     private UserService userService;
+    private VariantService variantService;
 
     @Autowired
-    public VotingController(VotingService votingService, UserService userService) {
+    public VotingController(VotingService votingService, VariantService variantService, UserService userService) {
         this.votingService = votingService;
         this.userService = userService;
+        this.variantService = variantService;
     }
 
     @PostMapping(path = "/create")
@@ -43,6 +46,11 @@ public class VotingController {
         try {
             votingDTO.setUser_id(userService.getUserByEmail(session.getAttribute("user").toString()).getId());
             votingService.create(votingDTO);
+            for (int i =0;i<votingDTO.getVariants().size();i++
+                 ) {
+                votingDTO.getVariants().get(i).setVoting_id(votingDTO.getId());
+                variantService.create(votingDTO.getVariants().get(i));
+            }
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(UserStatus.SUCCESSFULLY_CREATED);
         } catch (DuplicateKeyException e) {

@@ -48,6 +48,25 @@ public class VariantController {
         }
     }
 
+    @PostMapping(path = "/delete")
+    public ResponseEntity delete(HttpSession session, @RequestBody VariantDTO variantDTO) {
+
+
+        if (session.getAttribute("user") == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(UserStatus.ACCESS_ERROR);
+        }
+
+        try {
+            variantService.delete(variantDTO);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(UserStatus.SUCCESSFULLY_CREATED);
+        } catch (DuplicateKeyException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(UserStatus.NOT_UNIQUE_FIELDS_IN_REQUEST);
+        }
+    }
+
     @PostMapping(path = "/change")
     public ResponseEntity change(HttpSession session, @RequestBody VariantDTO variantDTO) {
 

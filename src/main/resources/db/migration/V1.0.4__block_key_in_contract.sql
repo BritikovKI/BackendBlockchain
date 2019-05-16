@@ -1,0 +1,1 @@
+ALTER TABLE voting ADD COLUMN block_key citext;
