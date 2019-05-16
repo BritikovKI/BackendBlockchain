@@ -51,7 +51,11 @@ public class VotingDAOImpl implements VotingDAO {
     @Override
     public VotingDTO get(Integer id) {
         final String sql = "SELECT * FROM voting WHERE id=?;";
-        return jdbc.queryForObject(sql,votingMapper,id);
+        List<VotingDTO> res = jdbc.query(sql,votingMapper,id);
+        for (VotingDTO re : res) {
+            re.setVariants(jdbc.query("SELECT * FROM variant WHERE voting_id=?;", variantMapper, re.getId()));
+        }
+        return res;
     }
 
     @Override
