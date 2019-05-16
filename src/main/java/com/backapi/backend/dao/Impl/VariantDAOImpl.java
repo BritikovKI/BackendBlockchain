@@ -24,8 +24,8 @@ public class VariantDAOImpl implements VariantDAO {
 
     @Override
     public void create(VariantDTO variantDTO) {
-        final String sql = "INSERT INTO variant(name, description) VALUES (?,?);";
-        jdbc.update(sql, variantDTO.getName(),variantDTO.getDescription());
+        final String sql = "INSERT INTO variant(name, description,voting_id) VALUES (?,?,?);";
+        jdbc.update(sql, variantDTO.getName(),variantDTO.getDescription(),variantDTO.getVoting_id());
     }
 
     @Override
