@@ -67,7 +67,7 @@ public class VotingController {
                     .body(UserStatus.ACCESS_ERROR);
         }
         UserDTO user = userService.getUserByEmail(session.getAttribute("user").toString());
-        if(user.getId() == votingService.get(userDTO.getVote_id()).getUser_id()) {
+        if(user.getId() == votingService.get(user,userDTO.getVote_id()).getUser_id()) {
             try {
                 votingService.addUser(userDTO, session.getAttribute("user").toString());
                 return ResponseEntity.status(HttpStatus.OK)
