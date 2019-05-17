@@ -56,7 +56,7 @@ public class VotingDAOImpl implements VotingDAO {
         try {
             res.setVoted(jdbc.queryForObject("SELECT voted FROM user_vote WHERE user_id=?;", Boolean.class, user.getId()));
         } catch (NullPointerException exp){
-            res.setVoted(false);
+            res.setVoted(null);
         }
         res.setVariants(jdbc.query("SELECT * FROM variant WHERE voting_id=?;", variantMapper, res.getId()));
         return res;
