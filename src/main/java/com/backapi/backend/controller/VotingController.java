@@ -46,8 +46,7 @@ public class VotingController {
         try {
             votingDTO.setUser_id(userService.getUserByEmail(session.getAttribute("user").toString()).getId());
             votingService.create(votingDTO);
-            for (int i =0;i<votingDTO.getVariants().size();i++
-                 ) {
+            for (int i =0;i<votingDTO.getVariants().size();i++) {
                 votingDTO.getVariants().get(i).setVoting_id(votingDTO.getId());
                 variantService.create(votingDTO.getVariants().get(i));
             }
