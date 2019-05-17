@@ -3,6 +3,7 @@ package com.backapi.backend.dao.Impl;
 import com.backapi.backend.dao.VotingDAO;
 import com.backapi.backend.mapper.VariantMapper;
 import com.backapi.backend.mapper.VotingMapper;
+import com.backapi.backend.model.dto.UserDTO;
 import com.backapi.backend.model.dto.UserVoteDTO;
 import com.backapi.backend.model.dto.VotingDTO;
 import org.springframework.jdbc.core.JdbcTemplate;import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +50,10 @@ public class VotingDAOImpl implements VotingDAO {
     }
 
     @Override
-    public VotingDTO get(Integer id) {
+    public VotingDTO get(UserDTO user, Integer id) {
         final String sql = "SELECT * FROM voting WHERE id=?;";
         VotingDTO res = jdbc.queryForObject(sql,votingMapper,id);
+        res.setVoted(jdbc.queryForObject("SELECT voted FROM user_vote WHERE user_id=?;", Boolean.class,user.getId()));
         res.setVariants(jdbc.query("SELECT * FROM variant WHERE voting_id=?;", variantMapper, res.getId()));
         return res;
     }

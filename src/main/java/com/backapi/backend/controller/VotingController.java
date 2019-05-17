@@ -111,9 +111,10 @@ public class VotingController {
                     .body(UserStatus.ACCESS_ERROR);
         }
 
+        UserDTO user = userService.getUserByEmail(session.getAttribute("user").toString());
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(votingService.get(id));
+                    .body(votingService.get(user,id));
         } catch (DuplicateKeyException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(UserStatus.NOT_FOUND);

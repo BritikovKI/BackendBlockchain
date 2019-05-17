@@ -11,7 +11,7 @@ public interface VotingDAO {
     void create(VotingDTO votingDTO);
     void change(VotingDTO votingDTO);
     void delete(VotingDTO votingDTO);
-    VotingDTO get(Integer id);
+    VotingDTO get(UserDTO user, Integer id);
     List<VotingDTO> getVotesByUser(Integer userId);
     List<VotingDTO> getAll(Integer userId);
 

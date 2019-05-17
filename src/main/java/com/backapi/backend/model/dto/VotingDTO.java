@@ -11,5 +11,6 @@ public class VotingDTO {
     private String description;
     private int user_id;
     private List<VariantDTO> variants;
+    private Boolean voted;
     private String blockKey;
 }
