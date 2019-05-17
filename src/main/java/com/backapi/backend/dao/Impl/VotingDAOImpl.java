@@ -53,7 +53,11 @@ public class VotingDAOImpl implements VotingDAO {
     public VotingDTO get(UserDTO user, Integer id) {
         final String sql = "SELECT * FROM voting WHERE id=?;";
         VotingDTO res = jdbc.queryForObject(sql,votingMapper,id);
-        res.setVoted(jdbc.queryForObject("SELECT voted FROM user_vote WHERE user_id=?;", Boolean.class,user.getId()));
+        try {
+            res.setVoted(jdbc.queryForObject("SELECT voted FROM user_vote WHERE user_id=?;", Boolean.class, user.getId()));
+        } catch (NullPointerException exp){
+            res.setVoted(false);
+        }
         res.setVariants(jdbc.query("SELECT * FROM variant WHERE voting_id=?;", variantMapper, res.getId()));
         return res;
     }
