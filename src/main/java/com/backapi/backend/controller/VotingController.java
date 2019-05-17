@@ -121,6 +121,7 @@ public class VotingController {
         }
     }
 
+
     @GetMapping(path = "/get/")
     public ResponseEntity getAll(HttpSession session) {
             if (session.getAttribute("user") == null) {
@@ -137,6 +138,24 @@ public class VotingController {
             }
     }
 
+
+    @GetMapping(path = "/get/{id}/users")
+    public ResponseEntity getUsers(HttpSession session, @PathVariable Integer id) {
+
+
+        if (session.getAttribute("user") == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(UserStatus.ACCESS_ERROR);
+        }
+
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(votingService.getVoters(id));
+        } catch (DuplicateKeyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(UserStatus.NOT_FOUND);
+        }
+    }
 
     @GetMapping(path = "/get/user")
     public ResponseEntity getUserPolls(HttpSession session) {

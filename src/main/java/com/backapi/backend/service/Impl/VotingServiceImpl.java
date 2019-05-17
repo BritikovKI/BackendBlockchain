@@ -1,5 +1,6 @@
 package com.backapi.backend.service.Impl;
 
+import com.backapi.backend.dao.UserDAO;
 import com.backapi.backend.dao.VotingDAO;
 import com.backapi.backend.model.dto.UserDTO;
 import com.backapi.backend.model.dto.UserVoteDTO;
@@ -14,10 +15,12 @@ import java.util.List;
 public class VotingServiceImpl implements VotingService {
 
     private final VotingDAO votingDAO;
+    private final UserDAO userDAO;
 
     @Autowired
-    public VotingServiceImpl(VotingDAO votingDAO) {
+    public VotingServiceImpl(VotingDAO votingDAO, UserDAO userDAO) {
         this.votingDAO = votingDAO;
+        this.userDAO = userDAO;
     }
 
     @Override
@@ -53,5 +56,10 @@ public class VotingServiceImpl implements VotingService {
     @Override
     public void addUser(UserVoteDTO userDTO, String user) {
         votingDAO.addUser(userDTO, user);
+    }
+
+    @Override
+    public List<UserDTO> getVoters(Integer id) {
+        return userDAO.getUserByVote(id);
     }
 }

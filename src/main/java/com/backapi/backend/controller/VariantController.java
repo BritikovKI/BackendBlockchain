@@ -107,6 +107,9 @@ public class VariantController {
 
 
 
+
+
+
     @GetMapping(path = "/get/voting/{id}")
     public ResponseEntity getByVote(HttpSession session, @PathVariable Integer votingId) {
         if (session.getAttribute("user") == null) {

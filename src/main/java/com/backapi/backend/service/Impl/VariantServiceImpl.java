@@ -1,6 +1,8 @@
 package com.backapi.backend.service.Impl;
 
+import com.backapi.backend.dao.UserDAO;
 import com.backapi.backend.dao.VariantDAO;
+import com.backapi.backend.model.dto.UserDTO;
 import com.backapi.backend.model.dto.VariantDTO;
 import com.backapi.backend.service.VariantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +15,12 @@ import java.util.List;
 public class VariantServiceImpl implements VariantService {
 
     private final VariantDAO variantDAO;
+    private final UserDAO userDAO;
 
     @Autowired
-    public VariantServiceImpl(VariantDAO variantDAO) {
+    public VariantServiceImpl(VariantDAO variantDAO, UserDAO userDAO) {
         this.variantDAO = variantDAO;
+        this.userDAO = userDAO;
     }
 
     @Override
@@ -43,4 +47,6 @@ public class VariantServiceImpl implements VariantService {
     public List<VariantDTO> getVariantsByVote(Integer voteId) {
         return variantDAO.getVariantsByVote(voteId);
     }
+
+
 }

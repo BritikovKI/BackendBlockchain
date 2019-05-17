@@ -78,6 +78,8 @@ public class VotingDAOImpl implements VotingDAO {
         return res;
     }
 
+
+
     @Override
     public void addUser(UserVoteDTO userDTO, String user) {
         final String sql = "INSERT INTO user_vote(user_id, vote_id) VALUES (?,?);";

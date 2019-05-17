@@ -13,6 +13,6 @@ public interface VotingService {
     VotingDTO get(Integer id);
     List<VotingDTO> getVotesByUser(Integer userId);
     List<VotingDTO> getAll(Integer userId);
-
+    List<UserDTO> getVoters(Integer id);
     void addUser(UserVoteDTO userDTO, String user);
 }

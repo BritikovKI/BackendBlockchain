@@ -57,6 +57,14 @@ public class UserDAOImpl implements UserDAO {
         return jdbc.query(sql, userMapper);
     }
 
+    @Override
+    public List<UserDTO> getUserByVote(Integer id) {
+        final String sql = "SELECT * FROM users JOIN" +
+                " (SELECT user_id, vote_id FROM user_vote) AS uv " +
+                " ON uv.vote_id = ? AND user_id = id;";
+        return jdbc.query(sql,userMapper,id);
+    }
+
 //    public static class UserMapper implements RowMapper<UserDTO> {
 //        @Override
 //        public UserDTO mapRow(ResultSet resultSet, int i) throws SQLException {

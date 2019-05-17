@@ -14,4 +14,6 @@ public interface UserDAO {
     void changeUserKey(String email, UserDTO encode);
 
     List<UserDTO> get();
+
+    List<UserDTO> getUserByVote(Integer id);
 }
