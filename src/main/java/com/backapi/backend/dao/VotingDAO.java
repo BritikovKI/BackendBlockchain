@@ -16,4 +16,6 @@ public interface VotingDAO {
     List<VotingDTO> getAll(Integer userId);
 
     void addUser(UserVoteDTO userDTO, String user);
+
+    void vote(Integer id, UserDTO user);
 }

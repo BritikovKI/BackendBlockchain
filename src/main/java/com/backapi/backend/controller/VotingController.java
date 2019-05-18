@@ -102,6 +102,26 @@ public class VotingController {
         }
     }
 
+    @PostMapping(path = "/vote")
+    public ResponseEntity vote(HttpSession session, @RequestBody Integer id) {
+
+
+        if (session.getAttribute("user") == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(UserStatus.ACCESS_ERROR);
+        }
+
+        UserDTO user = userService.getUserByEmail(session.getAttribute("user").toString());
+        try {
+            votingService.vote(id, user);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(UserStatus.SUCCESSFULLY_CHANGED);
+        } catch (DuplicateKeyException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(UserStatus.NOT_UNIQUE_FIELDS_IN_REQUEST);
+        }
+    }
+
     @GetMapping(path = "/get/{id}")
     public ResponseEntity get(HttpSession session, @PathVariable Integer id) {
 

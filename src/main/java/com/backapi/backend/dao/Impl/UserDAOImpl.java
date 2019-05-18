@@ -8,6 +8,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -46,9 +47,13 @@ public class UserDAOImpl implements UserDAO {
     }
 
 
+    @Override
+    @Transactional
     public void changeUserKey(String email,UserDTO user) {
         final String sql = "UPDATE users SET public_key=? WHERE lower(users.email) = lower(?);";
         jdbc.update(sql, user.getPublicKey(), email);
+        jdbc.update("DELETE FROM user_vote WHERE user_id = ?", user.getId());
+        jdbc.update("DELETE FROM voting WHERE creator_id = ?", user.getId());
     }
 
     @Override

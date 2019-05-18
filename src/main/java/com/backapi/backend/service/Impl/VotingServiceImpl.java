@@ -59,6 +59,11 @@ public class VotingServiceImpl implements VotingService {
     }
 
     @Override
+    public void vote(Integer id, UserDTO user) {
+        votingDAO.vote(id, user);
+    }
+
+    @Override
     public List<UserDTO> getVoters(Integer id) {
         return userDAO.getUserByVote(id);
     }

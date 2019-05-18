@@ -93,6 +93,12 @@ public class VotingDAOImpl implements VotingDAO {
         jdbc.update(sql, userDTO.getUser_id(), userDTO.getVote_id());
     }
 
+    @Override
+    public void vote(Integer id, UserDTO user) {
+        final String sql = "UPDATE user_vote SET voted = true WHERE user_id = ? AND vote_id = ?;";
+        jdbc.update(sql, user.getId(), id);
+    }
+
 //    public static class UserMapper implements RowMapper<UserDTO> {
 //        @Override
 //        public UserDTO mapRow(ResultSet resultSet, int i) throws SQLException {
