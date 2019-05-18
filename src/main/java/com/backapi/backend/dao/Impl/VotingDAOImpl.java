@@ -6,6 +6,7 @@ import com.backapi.backend.mapper.VotingMapper;
 import com.backapi.backend.model.dto.UserDTO;
 import com.backapi.backend.model.dto.UserVoteDTO;
 import com.backapi.backend.model.dto.VotingDTO;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +56,7 @@ public class VotingDAOImpl implements VotingDAO {
         VotingDTO res = jdbc.queryForObject(sql,votingMapper,id);
         try {
             res.setVoted(jdbc.queryForObject("SELECT voted FROM user_vote WHERE user_id=?;", Boolean.class, user.getId()));
-        } catch (NullPointerException exp){
+        } catch (EmptyResultDataAccessException |NullPointerException exp){
             res.setVoted(null);
         }
         res.setVariants(jdbc.query("SELECT * FROM variant WHERE voting_id=?;", variantMapper, res.getId()));
