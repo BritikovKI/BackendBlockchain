@@ -192,6 +192,4 @@ public class VotingController {
                     .body(UserStatus.NOT_FOUND);
         }
     }
-
-
 }
